@@ -10,5 +10,3 @@ class voting:
             file.writelines(lines)
 
         return "Vote added successfully"
-d=voting()
-print(d.add_vote(1))

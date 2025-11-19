@@ -7,12 +7,23 @@ if password != stored_password:
     exit()
 val = int(input("Enter a number: "))
 match val:
+    case 0:
+        from Parties import Parties
+        parties = Parties()
+        result = parties.get_parties()
+        print(result)
     case 1:
         party_name = input("Enter Party Name: ")
         party_prisident = input("Enter Party President: ")
         party_candidate = input("Enter Party Candidate: ")
         party = addparty(party_name)
         result = party.create_party(party_prisident, party_candidate)
+        print(result)
+    case 2:
+        from vote import voting
+        party_id = int(input("Enter Party ID to vote for: "))
+        vote = voting()
+        result = vote.add_vote(party_id)
         print(result)
     case _:
         print("Invalid Input")
