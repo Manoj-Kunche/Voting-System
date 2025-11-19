@@ -1,8 +1,10 @@
 from sqlite3 import connect
+import bcrypt
 
 class AddVoter:
-    def __init__(self, voter_name):
+    def __init__(self, voter_name, password):
         self.voter_name = voter_name
+        self.password = password
 
         with connect("./Database/voting.db") as conn:
             cursor = conn.cursor()
@@ -18,13 +20,9 @@ class AddVoter:
     def create_voter(self):
         with connect("./Database/voting.db") as conn:
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO VoterList (name) VALUES (?)", (self.voter_name,))
+            password_hash = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
+            cursor.execute("INSERT INTO VoterList (name, password) VALUES (?, ?)", (self.voter_name, password_hash))
             conn.commit()
 
         return f"Voter '{self.voter_name}' created successfully."
     
-
-
-v = AddVoter("John Doe")
-print(v.create_voter())
-

@@ -1,5 +1,6 @@
 import bcrypt
 from sqlite3 import connect
+from typing import Any
 
 class Auth:
     def check_admin_password(self, input_password: str) -> bool:
@@ -20,7 +21,7 @@ class Auth:
             print("Auth error:", e)
             return False
         
-    def check_user_password(self, userid: str, input_password: str) -> bool:
+    def check_user_password(self, userid: int, input_password: str) -> bool:
         try:
             with connect("./Database/voting.db") as conn:
                 cursor = conn.cursor()

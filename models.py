@@ -11,6 +11,11 @@ class Vote(BaseModel):
     
 class Voter(BaseModel):
     voter_id: int
+    password: str
 
 class AdminPasswordCheck(BaseModel):
+    input_password: str
+
+class VoterPasswordCheck(BaseModel):
+    voter_id: int
     input_password: str

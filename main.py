@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from models import Party, Voter, Vote , AdminPasswordCheck
+from models import Party, Voter, Vote , AdminPasswordCheck,VoterPasswordCheck
 from createParty import addparty
 from auth import Auth
 
@@ -15,6 +15,11 @@ def check_password(password_check: AdminPasswordCheck):
     is_valid = auth_instance.check_admin_password(password_check.input_password)
     return {"is_valid": is_valid}
     
+@app.post("/auth/check_user_password")
+def check_user_password(voter_check: VoterPasswordCheck):
+    auth_instance = Auth()
+    is_valid = auth_instance.check_user_password(voter_check.voter_id, voter_check.input_password)
+    return {"is_valid": is_valid}
 
 @app.post("/create_party")
 def create_party(party: Party):
@@ -35,3 +40,10 @@ def get_parties():
     parties_instance = Parties()
     result = parties_instance.get_parties()
     return {"parties": result}
+
+@app.post("/register_voter")
+def register_voter(voter: Voter):
+    from createvoter import AddVoter
+    registrar = AddVoter(voter.voter_id, voter.password)
+    result = registrar.create_voter()
+    return {"message": result}
