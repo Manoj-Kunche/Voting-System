@@ -1,30 +1,37 @@
+from fastapi import FastAPI
+from models import Party, Voter, Vote , AdminPasswordCheck
 from createParty import addparty
-with open("password.txt", "r") as f:
-    stored_password = f.read().strip().split(":")[1]
-password = input("Enter Password: ")
-if password != stored_password:
-    print("Incorrect Password. Access Denied.")
-    exit()
-val = int(input("Enter a number: "))
-match val:
-    case 0:
-        from Parties import Parties
-        parties = Parties()
-        result = parties.get_parties()
-        print(result)
-    case 1:
-        party_name = input("Enter Party Name: ")
-        party_prisident = input("Enter Party President: ")
-        party_candidate = input("Enter Party Candidate: ")
-        party = addparty(party_name)
-        result = party.create_party(party_prisident, party_candidate)
-        print(result)
-    case 2:
-        from vote import Voting
-        party_id = int(input("Enter Party ID to vote for: "))
-        voter_id = int(input("Enter your Voter ID: "))
-        vote = Voting()
-        result = vote.add_vote(party_id, voter_id)
-        print(result)
-    case _:
-        print("Invalid Input")
+from auth import Auth
+
+app = FastAPI()
+
+@app.get("/check")
+def check():
+    return {"status": "API is working"}
+
+@app.post("/auth/check_admin_password")
+def check_password(password_check: AdminPasswordCheck):
+    auth_instance = Auth()
+    is_valid = auth_instance.check_admin_password(password_check.input_password)
+    return {"is_valid": is_valid}
+    
+
+@app.post("/create_party")
+def create_party(party: Party):
+    party_creator = addparty(party.party_name,)
+    result = party_creator.create_party(party.party_president, party.party_candidate)
+    return {"message": result}
+
+@app.post("/vote")
+def vote(vote: Vote):
+    from vote import Voting
+    voting_instance = Voting()
+    result = voting_instance.add_vote(vote.party_id, vote.voter_id)
+    return {"message": result}
+
+@app.get("/parties")
+def get_parties():
+    from Parties import Parties
+    parties_instance = Parties()
+    result = parties_instance.get_parties()
+    return {"parties": result}
